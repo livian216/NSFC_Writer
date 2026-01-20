@@ -1,0 +1,90 @@
+# 路径配置
+paths:
+  raw_data: "./data/raw"
+  processed_data: "./data/processed"
+  literature_db: "./data/literature_db"
+  base_model_cache: "./models/base"
+  finetuned_model: "./models/finetuned/nsfc_writer"
+  merged_model: "./models/finetuned/nsfc_writer_merged"
+
+# # 模型配置
+# model:
+#   base_model: "Qwen/Qwen2.5-7B-Instruct"
+#   max_length: 4096  # 减小以节省显存
+#   dtype: "bfloat16"
+
+# # LoRA配置 - 减小参数以适配显存
+# lora:
+#   r: 16
+#   alpha: 32
+#   dropout: 0.05
+#   target_modules:
+#     - "q_proj"
+#     - "k_proj" 
+#     - "v_proj"
+#     - "o_proj"
+
+# # 训练配置 - 优化显存使用
+# training:
+#   num_epochs: 3
+#   batch_size: 1
+#   gradient_accumulation_steps: 16
+#   learning_rate: 0.0002
+#   warmup_ratio: 0.1
+#   logging_steps: 10
+#   save_steps: 100
+#   max_grad_norm: 0.3
+
+# 模型配置
+model:
+  base_model: "Qwen/Qwen2.5-1.5B-Instruct"
+  max_length: 512      # 大幅减小！原来是2048
+  dtype: "bfloat16"
+
+# LoRA配置 - 减小参数
+lora:
+  r: 16                # 减小！原来是64
+  alpha: 32            # 减小！原来是128
+  dropout: 0.05
+  target_modules:
+    - "q_proj"
+    - "v_proj"         # 只用2个模块，原来是7个
+
+# 训练配置 - 极限节省显存
+training:
+  num_epochs: 3
+  batch_size: 1        # 减到1！原来是4
+  gradient_accumulation_steps: 16  # 增大累积步数
+  learning_rate: 0.0002
+  warmup_ratio: 0.1
+  logging_steps: 10
+  save_steps: 100
+  max_grad_norm: 0.3
+
+# Ollama配置
+ollama:
+  host: "http://localhost:11434"
+  model_name: "qwen2.5:14b"
+  quantization: "q4_k_m"
+
+# 文献处理配置
+literature:
+  embedding_model: "BAAI/bge-small-zh-v1.5"
+  chunk_size: 500
+  chunk_overlap: 100
+  top_k: 5
+
+# 生成配置
+generation:
+  temperature: 0.7
+  top_p: 0.9
+  # max_tokens: 2048
+  # max_tokens: 4096
+  max_tokens: 16384
+  repeat_penalty: 1.1
+
+# Web应用配置
+webapp:
+  host: "127.0.0.1"
+  port: 7860
+  share: false
